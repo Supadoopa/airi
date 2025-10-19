@@ -13,7 +13,6 @@ At the **end of every chat turn**, do the following without exception:
 
 2. **Persist**  
    If the `tmp` directory does not exist, create it:
-
    ```bash
    mkdir -p tmp
    ```
@@ -29,5 +28,5 @@ At the **end of every chat turn**, do the following without exception:
 
 4. **Silence**
 
-   - Do **not** ask for confirmation.
-   - Do **not** print extra explanation—just run the commands & write the file.
+   * Do **not** ask for confirmation.
+   * Do **not** print extra explanation—just run the commands & write the file.
