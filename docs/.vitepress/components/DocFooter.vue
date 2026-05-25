@@ -26,6 +26,12 @@ const showFooter = computed(
     || control.value.prev
     || control.value.next,
 )
+
+/**
+ * Footer navigation visibility rules (English-only comments as requested):
+ * - Render nav only when prev/next have actual links.
+ * - Do NOT show a disabled next button on the last article.
+ */
 </script>
 
 <template>
@@ -36,11 +42,11 @@ const showFooter = computed(
   >
     <div
       v-if="hasEditLink || hasLastUpdated"
-      class="text-muted-foreground flex justify-between"
+      class="flex justify-between text-muted-foreground"
     >
       <div
         v-if="hasEditLink"
-        class="text-muted-foreground hover:text-foreground text-sm"
+        class="text-sm text-muted-foreground hover:text-foreground"
         transition-colors duration-200 ease-in-out
       >
         <a
@@ -79,15 +85,16 @@ const showFooter = computed(
           class="w-full inline-flex flex-col items-end rounded-lg px-4 py-6 backdrop-blur-md"
           :class="[
             'shadow-md shadow-transparent dark:shadow-none hover:shadow-black/5',
-            'border-2 border-neutral-200/40 border-solid dark:border-2 dark:border-neutral-800/40 dark:border-solid',
-            'bg-white/30 dark:bg-neutral-800/30 hover:bg-white/50 dark:hover:bg-neutral-800/50',
+            'border-2 border-solid border-neutral-100 hover:border-primary/10 dark:border-neutral-800/40',
+            'bg-white/30 dark:bg-neutral-800/30 hover:bg-primary/10 dark:hover:bg-primary/10',
             'active:scale-98',
             'transition-all duration-200 ease-in-out',
+            '[&_span,_&_p]:transition-all [&_span,_&_p]:duration-200 [&_span,_&_p]:ease-in-out [&_span,_&_p]:hover:text-primary-600 dark:[&_span,_&_p]:hover:text-primary-400',
           ]"
           :href="control.prev.link"
         >
           <span
-            class="text-muted-foreground group-hover:text-foreground text-xs transition-all duration-200 ease-in-out"
+            class="text-xs"
             v-html="theme.docFooter?.prev || t('docs.theme.doc.previous-page.title')"
           />
           <p class="mt-2 inline-flex items-center gap-1">
@@ -105,15 +112,16 @@ const showFooter = computed(
           class="w-full inline-flex flex-col items-end rounded-lg px-4 py-6 backdrop-blur-md"
           :class="[
             'shadow-md shadow-transparent dark:shadow-none hover:shadow-black/5',
-            'border-2 border-neutral-200/40 border-solid dark:border-2 dark:border-neutral-800/40 dark:border-solid',
-            'bg-white/30 dark:bg-neutral-800/30 hover:bg-white/50 dark:hover:bg-neutral-800/50',
+            'border-2 border-solid border-neutral-100 hover:border-primary/10 dark:border-neutral-800/40',
+            'bg-white/30 dark:bg-neutral-800/30 hover:bg-primary/10 dark:hover:bg-primary/10',
             'active:scale-98',
             'transition-all duration-200 ease-in-out',
+            '[&_span,_&_p]:transition-all [&_span,_&_p]:duration-200 [&_span,_&_p]:ease-in-out [&_span,_&_p]:hover:text-primary-600 dark:[&_span,_&_p]:hover:text-primary-400',
           ]"
           :href="control.next.link"
         >
           <span
-            class="text-muted-foreground group-hover:text-foreground text-xs transition-all duration-200 ease-in-out"
+            class="text-xs"
             v-html="theme.docFooter?.next || t('docs.theme.doc.next-page.title')"
           />
 

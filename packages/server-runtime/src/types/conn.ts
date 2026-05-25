@@ -1,3 +1,5 @@
+import type { MetadataEventSource } from '@proj-airi/server-shared/types'
+
 export interface Peer {
   /**
    * Unique random [uuid v4](https://developer.mozilla.org/en-US/docs/Glossary/UUID) identifier for the peer.
@@ -6,6 +8,16 @@ export interface Peer {
   send: (data: unknown, options?: {
     compress?: boolean
   }) => number | void | undefined
+  close?: () => void
+  /**
+   * WebSocket lifecycle state (mirrors WebSocket.readyState)
+   */
+  readyState?: number
+  request?: {
+    url?: string
+    headers?: Headers
+  }
+  remoteAddress?: string
 }
 
 export interface NamedPeer {
@@ -14,6 +26,17 @@ export interface NamedPeer {
   peer: Peer
 }
 
+export enum WebSocketReadyState {
+  CONNECTING = 0,
+  OPEN = 1,
+  CLOSING = 2,
+  CLOSED = 3,
+}
+
 export interface AuthenticatedPeer extends NamedPeer {
   authenticated: boolean
+  identity?: MetadataEventSource
+  lastHeartbeatAt?: number
+  healthy?: boolean
+  missedHeartbeats?: number
 }

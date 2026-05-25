@@ -33,6 +33,28 @@ describe('parseMayStructuredMessage', () => {
     expect(result).toMatchObject({ messages: ['Hello, world!', 'Hello, world!'], reply_to_message_id: '1234567890' })
   })
 
+  it('should fall back to the original text when structured output omits messages', () => {
+    const text = '{"reply_to_message_id":"1234567890"}'
+    const result = parseMayStructuredMessage(text)
+    expect(result).toMatchObject({ messages: [text], reply_to_message_id: '1234567890' })
+  })
+
+  it('should fall back to the original text when structured output uses a non-array messages field', () => {
+    const text = '{"messages":"Hello, world!"}'
+    const result = parseMayStructuredMessage(text)
+    expect(result).toMatchObject({ messages: [text], reply_to_message_id: undefined })
+  })
+
+  it('should return null when structured output has an empty messages array', () => {
+    const result = parseMayStructuredMessage('{"messages":[]}')
+    expect(result).toBeNull()
+  })
+
+  it('should return null when structured output has only blank messages', () => {
+    const result = parseMayStructuredMessage('{"messages":["", "   "]}')
+    expect(result).toBeNull()
+  })
+
   it('should return an array of messages from multi-line elements of input', () => {
     const result = parseMayStructuredMessage(`{"messages": [
 "Hello,

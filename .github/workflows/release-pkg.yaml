@@ -5,9 +5,6 @@ on:
     tags:
       - 'v*'
 
-env:
-  STORE_PATH: ''
-
 permissions:
   contents: write
   issues: write
@@ -18,20 +15,18 @@ permissions:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v3
-        name: Install pnpm
+      - uses: pnpm/action-setup@v5
         with:
           run_install: false
 
       - name: Install Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24.x
           # registry-url required. Learn more at
@@ -39,22 +34,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      # npm 11.5.1 or later is required so update to latest to use OIDC trusted publisher
+      # https://github.com/eslint/config-inspector/pull/174/files
+      # https://github.com/e18e/ecosystem-issues/issues/201
+      - run: npm install -g npm@latest
 
-      - name: Packages build
-        run: pnpm run build:packages
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:packages
 
-      - name: Packages publish (dry run)
-        run: pnpm publish -r --access public --no-git-checks --dry-run
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_CONFIG_PROVENANCE: true
+      - run: pnpm publish -r --access public --no-git-checks --dry-run
 
-      - name: Packages publish
-        run: pnpm publish -r --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_CONFIG_PROVENANCE: true
+      - run: pnpm publish -r --access public --no-git-checks

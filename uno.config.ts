@@ -57,15 +57,13 @@ export function presetStoryMockHover(): PresetOrFactoryAwaitable {
 }
 
 export function safelistAllPrimaryBackgrounds(): string[] {
-  return [
-    ...[undefined, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((shade) => {
-      const prefix = shade ? `bg-primary-${shade}` : `bg-primary`
-      return [
-        prefix,
-        ...[5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(opacity => `${prefix}/${opacity}`),
-      ]
-    }).flat(),
-  ]
+  return [undefined, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((shade) => {
+    const prefix = shade ? `bg-primary-${shade}` : `bg-primary`
+    return [
+      prefix,
+      ...[5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(opacity => `${prefix}/${opacity}`),
+    ]
+  }).flat()
 }
 
 export function presetWebFontsFonts(provider: 'fontsource' | 'none'): Record<string, string | WebFontMeta | (string | WebFontMeta)[]> {
@@ -88,7 +86,7 @@ export function presetWebFontsFonts(provider: 'fontsource' | 'none'): Record<str
       subsets: ['latin', 'japanese'],
     },
     'cuteen': {
-      name: 'Sniglet',
+      name: provider === 'fontsource' ? 'Nunito' : 'Nunito Variable',
       provider,
     },
     'jura': {
@@ -110,7 +108,6 @@ export function presetWebFontsFonts(provider: 'fontsource' | 'none'): Record<str
     'comfortaa': {
       name: provider === 'fontsource' ? 'Comfortaa' : 'Comfortaa Variable',
       provider,
-      subsets: ['cyrillic'],
     },
     'm-plus-rounded': {
       name: 'M PLUS Rounded 1c',
@@ -137,6 +134,7 @@ export function sharedUnoConfig() {
         scale: 1.2,
         collections: {
           ...createExternalPackageIconLoader('@proj-airi/lobe-icons'),
+          ...createExternalPackageIconLoader('@proj-airi/iconify-meteocons'),
         },
       }),
       presetScrollbar(),
@@ -172,16 +170,23 @@ export function sharedUnoConfig() {
       pipeline: {
         include: [
           // the default
+
           /\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/,
           // include js/ts files
-          '(components|src)/**/*.{js,ts,vue}',
-          '**/stage-ui/**/*.{vue,js,ts}',
-          '**/ui/**/*.{vue,js,ts}',
+          '(components|src)/**/*.{js,ts,vue}', // THIS CAN INCLUDE node_modules
+          '**/stage-ui/**/*.{vue,js,ts}', // THIS TOO
+          '**/ui/**/*.{vue,js,ts}', // THIS TOO
+        ],
+        exclude: [
+
+          /\/node_modules\//, // DO NOT SCAN THE BLACK HOLE
         ],
       },
     },
     rules: [
+
       [/^mask-\[(.*)\]$/, ([, suffix]) => ({ '-webkit-mask-image': suffix.replace(/_/g, ' ') })],
+
       [/^bg-dotted-\[(.*)\]$/, ([, color], { theme }) => {
         const parsedColor = parseColor(color, theme)
         // Util usage: https://github.com/unocss/unocss/blob/f57ef6ae50006a92f444738e50f3601c0d1121f2/packages-presets/preset-mini/src/_utils/utilities.ts#L186
@@ -190,14 +195,16 @@ export function sharedUnoConfig() {
           '--un-background-opacity': parsedColor?.cssColor?.alpha ?? parsedColor?.alpha ?? 1,
         }
       }],
+
+      [/drag-region/, () => ({ 'app-region': 'drag' })],
     ],
     theme: {
       fontFamily: {
         'sans': `"DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
         'sans-rounded': `"Comfortaa Variable", "Comfortaa", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
-        'cute': `"Sniglet", "Kiwi Maru", "Comfortaa", "xiaolai", "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
-        'cuteen': `"Sniglet", "Kiwi Maru", "Comfortaa", "xiaolai", "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
-        'cutejp': `"Sniglet", "Kiwi Maru", "Comfortaa", "xiaolai", "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
+        'cute': `"Nunito Variable", "Nunito", "ChillRoundM", "Kiwi Maru", "Comfortaa Variable", "Comfortaa", "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
+        'cuteen': `"Nunito Variable", "Nunito", "ChillRoundM", "Kiwi Maru", "Comfortaa Variable", "Comfortaa", "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
+        'cutejp': `"Nunito Variable", "Nunito", "ChillRoundM", "Kiwi Maru", "Comfortaa Variable", "Comfortaa", "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
       },
       /**
        * https://github.com/unocss/unocss/blob/1031312057a3bea1082b7d938eb2ad640f57613a/packages-presets/preset-wind4/src/theme/animate.ts

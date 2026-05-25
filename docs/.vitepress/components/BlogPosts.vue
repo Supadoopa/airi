@@ -58,18 +58,9 @@ const posts = computed(() => {
     })
     .filter(post => !!post.title)
 
-  const currentLanguagePostsData = [...transformedPostsData].filter(post => post.lang === lang.value)
-  const fallbackLanguagePostsData = [...transformedPostsData].filter(post => post.lang === 'en')
+  const currentLanguagePostsData = transformedPostsData.filter(post => post.lang === lang.value)
 
-  const setCurrentLanguagePostsData = new Set(currentLanguagePostsData.map(post => post.urlWithoutLang))
-  const diffFallbackLanguagePostsData = fallbackLanguagePostsData.filter(post => !setCurrentLanguagePostsData.has(post.urlWithoutLang))
-
-  return [
-    ...currentLanguagePostsData,
-    ...diffFallbackLanguagePostsData,
-  ].sort((a, b) => {
-    return b.date.time - a.date.time
-  })
+  return currentLanguagePostsData.sort((a, b) => b.date.time - a.date.time)
 })
 
 async function stringToSeed(str: string) {
@@ -177,10 +168,10 @@ const svgArts = computedAsync(async () => {
 <template>
   <div class="w-full">
     <div>
-      <h1 class="text-foreground text-4xl font-extrabold tracking-tight font-sans-rounded sm:text-5xl">
+      <h1 class="text-4xl text-foreground font-extrabold tracking-tight font-sans-rounded sm:text-5xl">
         {{ t('docs.theme.blog.title') }}
       </h1>
-      <p class="text-muted-foreground mt-4 text-xl">
+      <p class="mt-4 text-xl text-muted-foreground">
         {{ t('docs.theme.blog.subtitle') }}
       </p>
     </div>
@@ -214,24 +205,24 @@ const svgArts = computedAsync(async () => {
       >
         <div class="rounded-t-xl">
           <ClientOnly>
-            <div v-if="!post.frontmatter?.['preview-cover']?.[isDark ? 'dark' : 'light']" class="mb-6 h-20 md:h-60">
-              <div class="blur-lg" h="full" w-full v-html="isDark ? svgArts?.[index]?.dark : svgArts?.[index]?.light" />
+            <div v-if="!post.frontmatter?.['preview-cover']?.[isDark ? 'dark' : 'light']" class="relative mb-0 h-44 w-full md:h-68">
+              <div class="blur-lg" h-full w-full object-cover v-html="isDark ? svgArts?.[index]?.dark : svgArts?.[index]?.light" />
             </div>
             <div v-else class="relative mb-0 h-44 w-full md:h-68">
               <div class="preview-card-art-image-overlay" />
               <img
                 :src="post.frontmatter?.['preview-cover']?.[isDark ? 'dark' : 'light']"
                 alt="Post Cover"
-                class="preview-card-art-image h-full w-full object-cover"
+                class="preview-card-art-image not-prose h-full w-full object-cover"
               >
             </div>
           </ClientOnly>
         </div>
         <div class="relative z-1 flex-grow px-3 pb-3 pt-6 md:pt-6">
-          <div class="post-card-title text-card-foreground z-1 text-xl font-semibold transition-colors duration-200 md:text-2xl md:font-bold">
+          <div class="post-card-title z-1 text-xl text-card-foreground font-semibold transition-colors duration-200 md:text-2xl md:font-bold">
             {{ post.title }}
           </div>
-          <div class="text-muted-foreground mb-4 flex items-center gap-4 text-sm">
+          <div class="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
             <div class="flex items-center gap-2">
               <Icon icon="lucide:calendar" />
               <span>{{ post.date.string }}</span>
@@ -241,7 +232,7 @@ const svgArts = computedAsync(async () => {
               <span class="font-medium">{{ post.frontmatter.category }}</span>
             </div>
           </div>
-          <p v-if="post.excerpt || post?.frontmatter?.excerpt" class="text-muted-foreground fade-out-text mt-3 h-[calc(75%-48px)] leading-relaxed" v-html="post.excerpt || post?.frontmatter?.excerpt" />
+          <p v-if="post.excerpt || post?.frontmatter?.excerpt" class="fade-out-text mt-3 h-[calc(75%-48px)] text-muted-foreground leading-relaxed" v-html="post.excerpt || post?.frontmatter?.excerpt" />
         </div>
         <div class="mt-auto p-6 pt-0">
           <a :href="post.url" class="inline-flex items-center text-primary font-semibold hover:underline">
@@ -252,7 +243,7 @@ const svgArts = computedAsync(async () => {
       </a>
     </div>
     <div v-if="posts.length === 0" class="py-16 text-center">
-      <p class="text-muted-foreground text-lg">
+      <p class="text-lg text-muted-foreground">
         {{ t('docs.theme.blog.no-posts') }}
       </p>
     </div>

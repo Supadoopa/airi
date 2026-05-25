@@ -1,5 +1,3 @@
-import type { Preset } from 'unocss'
-
 import { presetChromatic } from '@proj-airi/unocss-preset-chromatic'
 import { blackA, cyan, grass, green, indigo, mauve, purple, red, slate, teal, violet } from '@radix-ui/colors'
 import { defineConfig, presetAttributify, presetIcons, presetTypography, presetWebFonts, presetWind3, transformerDirectives, transformerVariantGroup } from 'unocss'
@@ -9,6 +7,9 @@ export default defineConfig({
     presetAttributify(),
     presetTypography({
       cssExtend: {
+        'h1': {
+          'margin-bottom': '1rem',
+        },
         'a': {
           'color': '#223f5dff',
           'text-decoration': 'underline',
@@ -29,6 +30,51 @@ export default defineConfig({
         },
         'code::after': {
           content: 'normal',
+        },
+        'pre': {
+          'margin-top': '0.5rem',
+          'margin-bottom': '0',
+        },
+        'p': {
+          'margin-top': '0.5rem',
+          'margin-bottom': '0.5rem',
+        },
+        'details': {
+          'margin-top': '0.5rem',
+          'margin-bottom': '0.5rem',
+          'padding': '0.5rem 1rem',
+          'background-color': '#a6ceef1a',
+        },
+        '.dark details': {
+          'background-color': '#191c1e',
+        },
+        'ol': {
+          'margin-top': '0.25rem',
+          'margin-bottom': '0.25rem',
+          'padding-inline-start': '1.25rem',
+        },
+        'ol li': {
+          'padding-inline-start': '0.25rem',
+        },
+        'ul': {
+          'margin-top': '0.25rem',
+          'margin-bottom': '0.25rem',
+          'padding-inline-start': '1.25rem',
+        },
+        'ul li': {
+          'padding-inline-start': '0.25rem',
+        },
+        'li': {
+          'margin-top': '0',
+          'margin-bottom': '0',
+        },
+        'li p': {
+          'margin-top': '0.25rem',
+          'margin-bottom': '0.25rem',
+        },
+        'li blockquote': {
+          'margin-top': '1rem',
+          'margin-bottom': '1rem',
         },
       },
     }),
@@ -51,6 +97,12 @@ export default defineConfig({
           name: 'Comfortaa Variable',
           provider: 'none',
         },
+        'mystery-quest': {
+          name: 'Mystery Quest',
+        },
+        'grandstander': {
+          name: 'Grandstander',
+        },
       },
     }),
     presetIcons(),
@@ -60,7 +112,7 @@ export default defineConfig({
         primary: 0,
         complementary: 180,
       },
-    }) as Preset,
+    }),
   ],
   content: {
     filesystem: [
@@ -87,6 +139,8 @@ export default defineConfig({
     fontFamily: {
       'sans': `ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
       'sans-rounded': `"DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
+      'sans-serif-halloween-secondary': `"Grandstander", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
+      'sans-serif-halloween': `"Mystery Quest", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";`,
     },
     colors: {
       border: 'hsl(var(--border))',

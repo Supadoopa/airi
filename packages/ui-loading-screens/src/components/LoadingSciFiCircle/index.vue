@@ -307,7 +307,7 @@ async function writeLine<T extends any[]>(
   format: string,
   ...args: [...T, WriteLineOptions?]
 ): Promise<void> {
-  const options = args.length > 0 && typeof args[args.length - 1] === 'object'
+  const options = args.length > 0 && typeof args.at(-1) === 'object'
     ? args.pop() as WriteLineOptions
     : {}
 
@@ -419,7 +419,7 @@ defineExpose({
 
 <template>
   <Transition name="fade-out">
-    <div v-if="!done" w="[100dvw]" h="[100dvh]" font-retro-mono absolute inset-0 z-99 flex items-center justify-center>
+    <div v-if="!done" w="[100dvw]" h="[100dvh]" absolute inset-0 z-99 flex items-center justify-center font-retro-mono>
       <div flex flex-col max-w="800px" w="full" p="4">
         <div w="[min(200px,50dvw)]" h="[min(200px,50dvw)]" mx-auto flex justify-center overflow-hidden filter="blur-0.5px">
           <canvas ref="riveCanvas" object-contain />

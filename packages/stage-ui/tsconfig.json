@@ -4,6 +4,7 @@
     "jsx": "preserve",
     "lib": [
       "DOM",
+      "DOM.AsyncIterable",
       "ESNext"
     ],
     "module": "ESNext",
@@ -12,7 +13,9 @@
     "types": [
       "vitest",
       "vite/client",
-      "unplugin-info/client"
+      "unplugin-info/client",
+      "@types/audioworklet",
+      "@webgpu/types"
     ],
     "allowJs": true,
     "strict": true,
@@ -36,12 +39,10 @@
     "env.d.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/**/*.mts",
     "src/**/*.vue",
     "src/**/*.story.vue",
     "stories/**/*.ts",
     "stories/**/*.d.ts",
-    "stories/**/*.mts",
     "stories/**/*.vue",
     "stories/**/*.story.vue"
   ],

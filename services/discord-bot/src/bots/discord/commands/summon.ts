@@ -79,6 +79,14 @@ export class VoiceManager extends EventEmitter {
     { channel: BaseGuildVoiceChannel, monitor: AudioMonitor }
   > = new Map()
 
+  // Track event listeners for cleanup
+  private connectionListeners: Map<string, {
+    stateChange: (oldState: any, newState: any) => Promise<void>
+    error: (error: Error) => void
+    speakingStart: (userId: string) => void
+    speakingEnd: (userId: string) => void
+  }> = new Map()
+
   constructor(client: DiscordClient, airiClient: AiriClient) {
     super()
     this.client = client
@@ -263,7 +271,7 @@ export class VoiceManager extends EventEmitter {
         }
 
         const avgVolume
-        = volumeBuffer.reduce((sum, v) => sum + v, 0) / VOLUME_WINDOW_SIZE
+          = volumeBuffer.reduce((sum, v) => sum + v, 0) / VOLUME_WINDOW_SIZE
 
         if (avgVolume > SPEAKING_THRESHOLD) {
           volumeBuffer.length = 0
@@ -310,7 +318,18 @@ export class VoiceManager extends EventEmitter {
 
   leaveChannel(channel: BaseGuildVoiceChannel) {
     const connection = this.connections.get(channel.id)
+
     if (connection) {
+      // Remove event listeners to prevent memory leaks
+      const listeners = this.connectionListeners.get(channel.id)
+      if (listeners) {
+        connection.off('stateChange', listeners.stateChange)
+        connection.off('error', listeners.error)
+        connection.receiver.speaking.off('start', listeners.speakingStart)
+        connection.receiver.speaking.off('end', listeners.speakingEnd)
+        this.connectionListeners.delete(channel.id)
+      }
+
       connection.destroy()
       this.connections.delete(channel.id)
     }
@@ -351,8 +370,10 @@ export class VoiceManager extends EventEmitter {
     }
     if (this.activeAudioPlayer || this.processingVoice) {
       const state = this.userStates.get(userId)
-      state.buffers.length = 0
-      state.totalLength = 0
+      if (state) {
+        state.buffers.length = 0
+        state.totalLength = 0
+      }
       return
     }
     if (this.transcriptionTimeout) {

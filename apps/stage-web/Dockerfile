@@ -2,9 +2,12 @@ FROM node:24-trixie AS build-stage
 
 WORKDIR /app
 
+ARG VITE_ENABLE_POSTHOG=false
+ENV VITE_ENABLE_POSTHOG=${VITE_ENABLE_POSTHOG}
+
 RUN apt update && apt install -y ca-certificates curl
 RUN update-ca-certificates
-RUN apt update && apt install -y python3 curl
+RUN apt update && apt install -y build-essential python3 python3-setuptools curl
 
 RUN corepack enable
 

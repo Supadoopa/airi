@@ -20,7 +20,7 @@ function onClick({ target: el }: Event) {
       :key="title"
     >
       <a
-        class="text-muted-foreground outline-link w-full"
+        class="outline-link w-full text-muted-foreground"
         :class="{ 'font-medium': root }"
         :href="link"
         :title="title"
@@ -52,13 +52,13 @@ function onClick({ target: el }: Event) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* transition: color 0.5s; */
+  transition: color 0.5s;
   @apply text-sm leading-8;
 }
 
 .outline-link:hover,
 .outline-link.active {
-  /* transition: color 0.25s; */
+  transition: color 0.25s;
   @apply text-foreground;
 }
 
